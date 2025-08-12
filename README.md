@@ -21,6 +21,4 @@
 3. Chạy server: `node server.js`
 4. Truy cập http://localhost:3000
 
-## Thành viên nhóm
 
-- ... (Điền tên các thành viên)
