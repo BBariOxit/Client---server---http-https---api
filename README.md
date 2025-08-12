@@ -1,4 +1,3 @@
-# Lab01 - Nhóm 20
 
 ## Mục tiêu
 
