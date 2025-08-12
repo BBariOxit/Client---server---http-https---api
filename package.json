@@ -1,0 +1,24 @@
+{
+  "name": "lab1-nhom20",
+  "version": "1.0.0",
+  "description": "Client-Server & HTTP",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "client": "node client.js",
+    "monitor": "node monitor.js",
+    "perf": "node perf.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="vi" class="h-full">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lab01 – Static & API</title>
+
+  <!-- Tailwind CDN cho lab (đủ dùng, không cần build tool) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50:'#eef6ff',100:'#d9eaff',200:'#b6d7ff',300:'#86bcff',400:'#4ea1ff',
+              500:'#1d8bff',600:'#086fe0',700:'#0a59b3',800:'#0e447f',900:'#0b345f'
+            }
+          },
+          boxShadow: { soft: '0 10px 25px rgba(0,0,0,.15)' }
+        }
+      },
+      darkMode: 'media'
+    }
+  </script>
+  <!-- (Tùy chọn) vẫn link style.css nếu bạn giữ các rule bảng monitor -->
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body class="min-h-full bg-slate-950 text-slate-100 antialiased">
+  <!-- Header -->
+  <header class="mx-auto max-w-6xl px-4 py-10">
+    <div class="flex items-start justify-between gap-6">
+      <div>
+        <h1 class="text-3xl md:text-4xl font-bold tracking-tight">Lab 01 – Client/Server & HTTP</h1>
+        <p class="mt-2 text-slate-400">Static content + Dynamic API demo</p>
+      </div>
+      <a href="https://developer.chrome.com/docs/devtools/" target="_blank"
+         class="hidden md:inline-flex items-center gap-2 rounded-xl bg-brand-500/10 px-4 py-2 text-sm font-semibold text-brand-300 ring-1 ring-brand-500/30 hover:bg-brand-500/20">
+         DevTools docs →
+      </a>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="mx-auto grid max-w-6xl grid-cols-1 gap-6 px-4 pb-16 md:grid-cols-2 lg:grid-cols-3">
+    <!-- Card: Server Info -->
+    <section class="rounded-2xl border border-white/10 bg-slate-900/60 p-5 shadow-soft backdrop-blur">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-semibold">Thông tin server (dynamic)</h2>
+        <span class="inline-flex items-center rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-300 ring-1 ring-emerald-500/30">API</span>
+      </div>
+      <button id="btnFetch"
+              class="mt-4 inline-flex items-center rounded-xl bg-brand-500 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-400">
+        Lấy dữ liệu từ /api/info
+      </button>
+      <pre id="serverInfo" class="mt-4 max-h-64 overflow-auto rounded-xl border border-white/10 bg-black/60 p-4 text-xs">(chưa có dữ liệu)</pre>
+      <div id="latency" class="mt-2 text-sm text-slate-400"></div>
+    </section>
+
+    <!-- Card: Static assets -->
+    <section class="rounded-2xl border border-white/10 bg-slate-900/60 p-5 shadow-soft backdrop-blur">
+      <h2 class="text-xl font-semibold">Static assets</h2>
+      <p class="mt-1 text-slate-400">Đây là nội dung tĩnh phục vụ bởi Express static middleware.</p>
+      <img src="https://picsum.photos/seed/lab01/800/450" alt="random" class="mt-4 w-full rounded-2xl"/>
+      <p class="mt-2 text-sm text-slate-400">Mở DevTools → Network để xem headers (cache, etag...).</p>
+    </section>
+
+    <!-- Card: Error demo -->
+    <section class="rounded-2xl border border-white/10 bg-slate-900/60 p-5 shadow-soft backdrop-blur">
+      <h2 class="text-xl font-semibold">Thử lỗi</h2>
+      <div class="mt-3 flex gap-3">
+        <button id="btn404" class="rounded-xl bg-slate-800 px-4 py-2 text-sm font-semibold ring-1 ring-white/10 hover:bg-slate-700">Gọi 404</button>
+        <button id="btn500" class="rounded-xl bg-rose-600 px-4 py-2 text-sm font-semibold text-white hover:bg-rose-700">Gọi 500</button>
+      </div>
+      <pre id="errorBox" class="mt-4 max-h-48 overflow-auto rounded-xl border border-white/10 bg-black/60 p-4 text-xs">(kết quả lỗi sẽ hiện ở đây)</pre>
+    </section>
+
+    <!-- Card: Network Monitor -->
+    <section class="rounded-2xl border border-white/10 bg-slate-900/60 p-5 shadow-soft backdrop-blur md:col-span-2 lg:col-span-3">
+      <h2 class="text-xl font-semibold">Network Monitor (client-side)</h2>
+      <p class="mt-1 text-slate-400">Bảng thống kê tài nguyên trang (Performance API).</p>
+      <div id="monitor" class="mt-4 overflow-x-auto"><!-- render bằng JS --></div>
+    </section>
+
+    <!-- Card: WebSocket (bonus) -->
+    <section id="wsCard" class="hidden rounded-2xl border border-white/10 bg-slate-900/60 p-5 shadow-soft backdrop-blur md:col-span-2 lg:col-span-3">
+      <h2 class="text-xl font-semibold">WebSocket (nhiệm vụ thưởng)</h2>
+      <div class="mt-3 flex gap-3">
+        <input id="wsInput" placeholder="Nhập tin nhắn..."
+               class="w-full rounded-xl border border-white/10 bg-slate-800 px-4 py-2 text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-400" />
+        <button id="wsSend" class="rounded-xl bg-brand-500 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-600">Gửi</button>
+      </div>
+      <pre id="wsLog" class="mt-4 max-h-64 overflow-auto rounded-xl border border-white/10 bg-black/60 p-4 text-xs">(log WebSocket)</pre>
+    </section>
+  </main>
+
+  <footer class="mx-auto max-w-6xl px-4 pb-12 text-sm text-slate-500">© Client - Sever - http/https</footer>
+
+  <script src="/script.js" defer></script>
+</body>
+</html>

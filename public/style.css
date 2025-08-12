@@ -1,0 +1,5 @@
+/* Dùng Tailwind rồi thì file này có thể trống.
+   Giữ lại vài rule nhỏ cho bảng monitor nếu muốn: */
+#monitor table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden}
+#monitor thead th{font:600 12px/1.4 ui-sans-serif,system-ui;letter-spacing:.02em;text-transform:uppercase;background:rgba(148,163,184,.08);padding:10px 12px;color:#cbd5e1}
+#monitor tbody td{padding:10px 12px;border-top:1px solid rgba(255,255,255,.06)}
